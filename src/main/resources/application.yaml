@@ -1,0 +1,33 @@
+erver:
+  port: 3003
+  servlet:
+    context-path: /account
+  error:
+    include-message: always
+spring:
+  application:
+    name: account-service
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: accounts
+      # NOT NEEDED FOR LOCAL INSTANCE
+  #      username: rootmongo
+  #      password: rootmongo
+  #      authentication-database: admin
+
+# Eureka props
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://eurekaUser:eurekaPass@localhost:3007/eureka/
+
+jwt:
+  secret: s3cr3t
+  header: Authorization
+  expiration: 3600
