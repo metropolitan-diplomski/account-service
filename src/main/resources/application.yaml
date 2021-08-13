@@ -1,4 +1,4 @@
-erver:
+server:
   port: 3003
   servlet:
     context-path: /account
