@@ -1,4 +1,4 @@
-package com.met.account.controller.advice;
+package com.met.account.controller;
 
 import com.met.account.dto.request.ChangeBalanceRequest;
 import com.met.account.dto.request.CreateAccountRequest;
