@@ -3,16 +3,15 @@ package com.met.account.service.impl;
 import com.met.account.api.AuthServiceApi;
 import com.met.account.document.Account;
 import com.met.account.dto.AccountMapper;
-import com.met.account.dto.ChangeBalanceType;
 import com.met.account.dto.request.ChangeBalanceRequest;
 import com.met.account.dto.request.CreateAccountRequest;
 import com.met.account.dto.response.AccountResponse;
+import com.met.account.dto.response.ExecuteTransactionResponse;
 import com.met.account.dto.response.UserResponse;
 import com.met.account.exception.AccountServiceException;
 import com.met.account.exception.ErrorCode;
 import com.met.account.repository.AccountRepository;
 import com.met.account.service.AccountService;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -96,22 +95,48 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountResponse changeBalance(String id, ChangeBalanceRequest request) {
-        Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new AccountServiceException(ErrorCode.NOT_FOUND, "Account with that account number not found"));
-        if (request.getType().equals(ChangeBalanceType.ADD)) {
-            account.setBalance(account.getBalance() + request.getAmount());
-        } else {
-            Double result = account.getBalance() - request.getAmount();
+    public ExecuteTransactionResponse changeBalance(ChangeBalanceRequest request) {
+        ExecuteTransactionResponse transactionResponse = new ExecuteTransactionResponse();
+        transactionResponse.setSuccess(true);
+        Account from = accountRepository.findByAccountNumber(request.getAccountFrom()).orElse(null);
+        Account to = accountRepository.findByAccountNumber(request.getAccountTo()).orElse(null);
+
+        // If add then to must have enough balance if subtract then to
+        if (from != null && to != null) {
+            transactionResponse.setFromId(from.getId());
+            transactionResponse.setToId(to.getId());
+            Double result = from.getBalance() - request.getAmount();
             if (result < 0) {
-                throw new AccountServiceException(ErrorCode.NOT_ENOUGH_FUNDS, "Not enough funds in account for this transaction");
+                transactionResponse.setSuccess(false);
+                transactionResponse.setErrorMessage("Not enough funds in account for this transaction");
+            } else {
+                transactionResponse.setSuccess(true);
+                from.setBalance(result);
+                to.setBalance(to.getBalance() + request.getAmount());
             }
-            account.setBalance(result);
+        } else if (from != null) {
+            transactionResponse.setFromId(from.getId());
+            Double result = from.getBalance() - request.getAmount();
+            if (result < 0) {
+                transactionResponse.setSuccess(false);
+                transactionResponse.setErrorMessage("Not enough funds in account for this transaction");
+            } else {
+                transactionResponse.setSuccess(true);
+                from.setBalance(result);
+            }
+        } else if (to != null) {
+            to.setBalance(to.getBalance() + request.getAmount());
         }
 
-        Account updated = accountRepository.save(account);
+        if (to != null) {
+            accountRepository.save(to);
+        }
 
-        return AccountMapper.mapEntityToResponse(updated);
+        if (from != null) {
+            accountRepository.save(from);
+        }
+
+        return transactionResponse;
     }
 
     private Long generateAccountNumber() {

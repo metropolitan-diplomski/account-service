@@ -3,12 +3,10 @@ package com.met.account.controller.advice;
 import com.met.account.dto.request.ChangeBalanceRequest;
 import com.met.account.dto.request.CreateAccountRequest;
 import com.met.account.dto.response.AccountResponse;
+import com.met.account.dto.response.ExecuteTransactionResponse;
 import com.met.account.service.AccountService;
-import com.netflix.discovery.converters.Auto;
-import feign.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,8 +47,8 @@ public class AccountController {
         return ResponseEntity.ok(accountService.getAllAccountsForUser(id, authToken));
     }
 
-    @PutMapping("/{id}/change-balance")
-    public ResponseEntity<AccountResponse> changeBalance(@PathVariable("id") String id, @Valid @RequestBody ChangeBalanceRequest request) {
-        return ResponseEntity.ok(accountService.changeBalance(id, request));
+    @PutMapping("/transaction/execute/")
+    public ResponseEntity<ExecuteTransactionResponse> changeBalance(@Valid @RequestBody ChangeBalanceRequest request) {
+        return ResponseEntity.ok(accountService.changeBalance(request));
     }
 }
