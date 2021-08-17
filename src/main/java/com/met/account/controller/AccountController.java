@@ -23,7 +23,7 @@ public class AccountController {
     @Value("${jwt.header}")
     private String tokenHeader;
 
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<AccountResponse> createAccount(HttpServletRequest request, @Valid @RequestBody CreateAccountRequest accountRequest) {
         String authToken = request.getHeader(this.tokenHeader);
         return ResponseEntity.ok(accountService.createAccount(accountRequest));

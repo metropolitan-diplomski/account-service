@@ -45,12 +45,14 @@ public class AccountServiceImpl implements AccountService {
         account.setName(request.getName());
         account.setUserId(request.getUserId());
 
-        return AccountMapper.mapEntityToResponse(account);
+
+
+        return AccountMapper.mapEntityToResponse(accountRepository.save(account));
     }
 
     @Override
     public List<AccountResponse> getAllAccountsForUser(String userId, String token) {
-        List<Account> accounts = accountRepository.findByUserId(userId);
+        List<Account> accounts = accountRepository.findAllByUserId(userId);
         List<AccountResponse> accountResponses = new ArrayList<>();
         UserResponse user = authServiceApi.getUserById(userId, token);
         if (user != null) {
