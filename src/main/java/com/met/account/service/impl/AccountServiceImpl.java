@@ -127,6 +127,7 @@ public class AccountServiceImpl implements AccountService {
                 from.setBalance(result);
             }
         } else if (to != null) {
+            transactionResponse.setToId(to.getId());
             to.setBalance(to.getBalance() + request.getAmount());
         }
 

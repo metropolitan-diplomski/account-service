@@ -47,7 +47,7 @@ public class AccountController {
         return ResponseEntity.ok(accountService.getAllAccountsForUser(id, authToken));
     }
 
-    @PutMapping("/transaction/execute/")
+    @PutMapping("/transaction/execute")
     public ResponseEntity<ExecuteTransactionResponse> changeBalance(@Valid @RequestBody ChangeBalanceRequest request) {
         return ResponseEntity.ok(accountService.changeBalance(request));
     }
