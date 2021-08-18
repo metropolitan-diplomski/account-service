@@ -74,7 +74,7 @@ public class AccountServiceImpl implements AccountService {
     public AccountResponse getAccountByAccountNumber(Long accountNumber, String token) {
         Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new AccountServiceException(ErrorCode.NOT_FOUND, "Account with that acccount number not found"));
-        UserResponse user = authServiceApi.getUserById(account.getId(), token);
+        UserResponse user = authServiceApi.getUserById(account.getUserId(), token);
         AccountResponse accountResponse = AccountMapper.mapEntityToResponse(account);
         if (user != null) {
             accountResponse.setUserFullName(user.getFullName());
@@ -87,7 +87,7 @@ public class AccountServiceImpl implements AccountService {
     public AccountResponse getAccountById(String id, String token) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new AccountServiceException(ErrorCode.NOT_FOUND, "Account with that account number not found"));
-        UserResponse user = authServiceApi.getUserById(account.getId(), token);
+        UserResponse user = authServiceApi.getUserById(account.getUserId(), token);
         AccountResponse accountResponse = AccountMapper.mapEntityToResponse(account);
         if (user != null) {
             accountResponse.setUserFullName(user.getFullName());
