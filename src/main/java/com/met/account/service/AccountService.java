@@ -14,5 +14,6 @@ public interface AccountService {
     AccountResponse getAccountByAccountNumber(Long accountNumber, String token);
     AccountResponse getAccountById(String id, String token);
     ExecuteTransactionResponse changeBalance(ChangeBalanceRequest request);
+    void deleteAccount(String id);
 
 }

@@ -142,6 +142,14 @@ public class AccountServiceImpl implements AccountService {
         return transactionResponse;
     }
 
+    @Override
+    public void deleteAccount(String id) {
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new AccountServiceException(ErrorCode.NOT_FOUND, "Account with that account number not found"));
+
+        accountRepository.delete(account);
+    }
+
     private Long generateAccountNumber() {
         StringBuilder accountBuilder = new StringBuilder();
         accountBuilder.append("320");

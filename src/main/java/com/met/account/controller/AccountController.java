@@ -35,6 +35,12 @@ public class AccountController {
         return ResponseEntity.ok(accountService.getAccountById(id, authToken));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<AccountResponse> delete(@PathVariable("id") String id) {
+        accountService.deleteAccount(id);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/accountNum/{num}")
     public ResponseEntity<AccountResponse> getByAccountNumber(HttpServletRequest request, @PathVariable("num") Long num) {
         String authToken = request.getHeader(this.tokenHeader);
