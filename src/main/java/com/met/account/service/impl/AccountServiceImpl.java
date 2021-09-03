@@ -73,7 +73,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountResponse getAccountByAccountNumber(Long accountNumber, String token) {
         Account account = accountRepository.findByAccountNumber(accountNumber)
-                .orElseThrow(() -> new AccountServiceException(ErrorCode.NOT_FOUND, "Account with that acccount number not found"));
+                .orElseThrow(() -> new AccountServiceException(ErrorCode.NOT_FOUND, "Account with that account number not found"));
         UserResponse user = authServiceApi.getUserById(account.getUserId(), token);
         AccountResponse accountResponse = AccountMapper.mapEntityToResponse(account);
         if (user != null) {
@@ -103,7 +103,6 @@ public class AccountServiceImpl implements AccountService {
         Account from = accountRepository.findByAccountNumber(request.getAccountFrom()).orElse(null);
         Account to = accountRepository.findByAccountNumber(request.getAccountTo()).orElse(null);
 
-        // If add then to must have enough balance if subtract then to
         if (from != null && to != null) {
             transactionResponse.setFromId(from.getId());
             transactionResponse.setToId(to.getId());
@@ -130,15 +129,12 @@ public class AccountServiceImpl implements AccountService {
             transactionResponse.setToId(to.getUserId());
             to.setBalance(to.getBalance() + request.getAmount());
         }
-
         if (to != null) {
             accountRepository.save(to);
         }
-
         if (from != null) {
             accountRepository.save(from);
         }
-
         return transactionResponse;
     }
 
