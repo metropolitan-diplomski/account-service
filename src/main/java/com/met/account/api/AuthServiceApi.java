@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 @FeignClient("auth-service")
 public interface AuthServiceApi {
-    @GetMapping("/auth/users/{id}")
+    @GetMapping("/auth/profile/{id}")
     UserResponse getUserById(@PathVariable("id") String id, @RequestHeader("Authorization") String token);
 }
